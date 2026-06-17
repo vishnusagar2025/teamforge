@@ -15,8 +15,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    CORS(app, origins=["http://localhost:3000", "http://localhost:5173"], supports_credentials=True)
-    JWTManager(app)
+CORS(app, origins=["http://localhost:3000", "http://localhost:5173", "https://teamforge-mocha.vercel.app"], supports_credentials=True)    JWTManager(app)
     db.init_app(app)
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
