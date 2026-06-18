@@ -1,4 +1,7 @@
 from flask import Flask
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config.config import Config
