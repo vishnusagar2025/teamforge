@@ -5,6 +5,7 @@ from models.user import User
 from models.profile import Profile
 from models.skill import Skill
 from models.interest import Interest
+import json
 
 profile_bp = Blueprint("profile", __name__)
 
@@ -23,14 +24,24 @@ def update_profile():
                   "linkedin_url", "portfolio_url", "commitment_level", "is_looking_for_team"]:
         if field in data:
             setattr(user, field, data[field])
+    if not user.profile:
+        user.profile = Profile(user_id=user.id)
     if "bio" in data:
-        if not user.profile:
-            user.profile = Profile(user_id=user.id)
         user.profile.bio = data["bio"]
-    if "github_url" in data and user.profile:
+    if "github_url" in data:
         user.profile.github_url = data["github_url"]
     db.session.commit()
     return jsonify(user.to_dict()), 200
+
+@profile_bp.route("/avatar", methods=["PUT"])
+@jwt_required()
+def update_avatar():
+    user = User.query.get_or_404(int(get_jwt_identity()))
+    data = request.get_json()
+    if "avatar_config" in data:
+        user.avatar_config = json.dumps(data["avatar_config"])
+    db.session.commit()
+    return jsonify({"avatar_config": user.avatar_config}), 200
 
 @profile_bp.route("/skills", methods=["POST"])
 @jwt_required()

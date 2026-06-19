@@ -3,6 +3,8 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from database.db import db
 from models.user import User
 from models.profile import Profile
+from models.interest import Interest
+from models.skill import Skill
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -17,9 +19,12 @@ def register():
         return jsonify({"error": "Email already registered"}), 409
     if User.query.filter_by(phone=data["phone"]).first():
         return jsonify({"error": "Phone already registered"}), 409
+    roll = data.get("roll_number") or None
+    if roll and User.query.filter_by(roll_number=roll).first():
+        return jsonify({"error": "Roll number already registered"}), 409
     user = User(
         email=data["email"], phone=data["phone"], full_name=data["full_name"],
-        roll_number=data.get("roll_number"), institution=data["institution"],
+        roll_number=roll, institution=data["institution"],
         department=data["department"], year_of_study=int(data["year_of_study"]),
         linkedin_url=data.get("linkedin_url"), portfolio_url=data.get("portfolio_url"),
         commitment_level=data.get("commitment_level", "serious"),
@@ -29,6 +34,10 @@ def register():
     db.session.flush()
     profile = Profile(user_id=user.id, bio=data.get("bio", ""))
     db.session.add(profile)
+    for cat in (data.get("interests") or []):
+        db.session.add(Interest(user_id=user.id, category=cat))
+    for skill_name in (data.get("skills") or []):
+        db.session.add(Skill(user_id=user.id, name=skill_name, level="intermediate"))
     db.session.commit()
     token = create_access_token(identity=str(user.id))
     return jsonify({"token": token, "user": user.to_dict()}), 201

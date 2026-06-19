@@ -9,7 +9,7 @@ class User(db.Model):
     phone = db.Column(db.String(15), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     full_name = db.Column(db.String(100), nullable=False)
-    roll_number = db.Column(db.String(30), unique=True)
+    roll_number = db.Column(db.String(30), unique=True, nullable=True)
     institution = db.Column(db.String(150))
     department = db.Column(db.String(100))
     year_of_study = db.Column(db.Integer)
@@ -17,6 +17,7 @@ class User(db.Model):
     portfolio_url = db.Column(db.String(200))
     resume_url = db.Column(db.String(200))
     avatar_url = db.Column(db.String(200), default="/default-avatar.png")
+    avatar_config = db.Column(db.Text, nullable=True)  # JSON: custom avatar config
     is_looking_for_team = db.Column(db.Boolean, default=True)
     commitment_level = db.Column(db.String(20), default="serious")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -46,9 +47,21 @@ class User(db.Model):
             "portfolio_url": self.portfolio_url,
             "resume_url": self.resume_url,
             "avatar_url": self.avatar_url,
+            "avatar_config": self.avatar_config,
             "is_looking_for_team": self.is_looking_for_team,
             "commitment_level": self.commitment_level,
             "skills": [s.to_dict() for s in self.skills],
             "interests": [i.to_dict() for i in self.interests],
+            "bio": self.profile.bio if self.profile else "",
+            "github_url": self.profile.github_url if self.profile else "",
             "created_at": self.created_at.isoformat(),
+        }
+
+    def to_summary(self):
+        """Lightweight version for nested use (team members, search results)."""
+        return {
+            "id": self.id, "full_name": self.full_name, "department": self.department,
+            "year_of_study": self.year_of_study, "institution": self.institution,
+            "avatar_url": self.avatar_url, "avatar_config": self.avatar_config,
+            "commitment_level": self.commitment_level,
         }

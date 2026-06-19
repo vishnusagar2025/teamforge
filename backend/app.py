@@ -20,6 +20,7 @@ def create_app():
     app.config.from_object(Config)
 
     CORS(app, origins="*", supports_credentials=False)
+    JWTManager(app)
     db.init_app(app)
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")

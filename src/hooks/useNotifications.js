@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { notificationService } from "../services/teamService";
+import { useAuth } from "../context/AuthContext";
 
 export function useNotifications() {
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -14,10 +16,11 @@ export function useNotifications() {
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchData();
     const t = setInterval(fetchData, 30000);
     return () => clearInterval(t);
-  }, []);
+  }, [user]);
 
   const markRead = async (id) => {
     await notificationService.markRead(id);

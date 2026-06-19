@@ -1,5 +1,6 @@
 from database.db import db
 from datetime import datetime
+import json
 
 team_members = db.Table("team_members",
     db.Column("team_id", db.Integer, db.ForeignKey("teams.id")),
@@ -30,13 +31,17 @@ class Team(db.Model):
         return len(self.members)
 
     def to_dict(self):
+        try:
+            skills = json.loads(self.required_skills) if self.required_skills else []
+        except (ValueError, TypeError):
+            skills = []
         return {
             "id": self.id, "name": self.name, "description": self.description,
-            "leader": self.leader.to_dict() if self.leader else None,
+            "leader": self.leader.to_summary() if self.leader else None,
             "institution": self.institution, "max_members": self.max_members,
             "current_members": self.member_count(), "is_open": self.is_open,
             "hackathon_name": self.hackathon_name, "project_domain": self.project_domain,
-            "required_skills": self.required_skills, "commitment_level": self.commitment_level,
-            "members": [m.to_dict() for m in self.members],
+            "required_skills": skills, "commitment_level": self.commitment_level,
+            "members": [m.to_summary() for m in self.members],
             "created_at": self.created_at.isoformat(),
         }

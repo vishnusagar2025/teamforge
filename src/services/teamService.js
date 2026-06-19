@@ -22,6 +22,7 @@ export const searchService = {
 export const profileService = {
   getMyProfile: () => api.get("/profile/"),
   updateProfile: (data) => api.put("/profile/", data),
+  updateAvatar: (avatarConfig) => api.put("/profile/avatar", { avatar_config: avatarConfig }),
   addSkill: (data) => api.post("/profile/skills", data),
   deleteSkill: (id) => api.delete(`/profile/skills/${id}`),
   addInterest: (data) => api.post("/profile/interests", data),
