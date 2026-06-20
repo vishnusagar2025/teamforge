@@ -49,7 +49,7 @@ const STEPS = [
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#080812] text-white overflow-x-hidden">
+    <div className="min-h-screen page-bg text-white overflow-x-hidden">
       {/* Ambient background */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-600/8 rounded-full blur-3xl" />

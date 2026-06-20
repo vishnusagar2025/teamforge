@@ -14,7 +14,7 @@ export default function Notifications() {
   const { notifications, unreadCount, markRead, markAllRead } = useNotifications();
 
   return (
-    <div className="min-h-screen bg-[#0F0F1A]">
+    <div className="min-h-screen page-bg">
       <Navbar />
       <div className="max-w-2xl mx-auto px-4 pt-24 pb-12">
         <div className="flex items-center justify-between mb-6">

@@ -12,7 +12,7 @@ export default function FindPeople() {
   const [loading, setLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
-    institution: user?.institution || "", department: "", year: "", interest: "", commitment: "",
+    institution: user?.institution || "", department: "", year: "", interest: "", commitment: "", skill: "",
   });
 
   const doSearch = async () => {
@@ -25,7 +25,7 @@ export default function FindPeople() {
   const setF = (k, v) => setFilters(p => ({...p, [k]: v}));
 
   return (
-    <div className="min-h-screen bg-[#0F0F1A]">
+    <div className="min-h-screen page-bg">
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 pt-24 pb-12">
         <div className="flex items-center justify-between mb-6">
@@ -71,6 +71,11 @@ export default function FindPeople() {
                 <option value="learning">📚 Learning</option>
                 <option value="fun">😄 Fun</option>
               </select>
+            </div>
+            <div>
+              <label className="block text-xs text-slate-400 mb-1">Skill</label>
+              <input className="input text-sm" placeholder="e.g. React, Python..." value={filters.skill}
+                onChange={e => setF("skill", e.target.value)}/>
             </div>
             <div className="flex items-end gap-2">
               <button onClick={doSearch} className="btn-primary text-sm flex-1">Search</button>

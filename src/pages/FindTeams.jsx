@@ -27,7 +27,7 @@ export default function FindTeams() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F0F1A]">
+    <div className="min-h-screen page-bg">
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 pt-24 pb-12">
         <div className="flex items-center justify-between mb-6">
@@ -82,7 +82,7 @@ export default function FindTeams() {
                   <div className="flex gap-1 items-center">
                     {Array.from({ length: t.max_members }).map((_, i) => (
                       <div key={i} className={`w-6 h-6 rounded-full border-2 ${
-                        i < t.current_members ? "bg-purple-600 border-purple-500" : "bg-[#0F0F1A] border-[#2A2A4A]"}`}/>
+                        i < t.current_members ? "bg-purple-600 border-purple-500" : "page-bg border-[#2A2A4A]"}`}/>
                     ))}
                     <span className="text-xs text-slate-400 ml-2">{t.max_members - t.current_members} slots open</span>
                   </div>

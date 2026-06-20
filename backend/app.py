@@ -14,6 +14,9 @@ from routes.project import project_bp
 from routes.search import search_bp
 from routes.user import user_bp
 from routes.notification import notification_bp
+from routes.review import review_bp
+from routes.ai_routes import ai_bp
+from routes.admin import admin_bp
 
 def create_app():
     app = Flask(__name__)
@@ -30,6 +33,9 @@ def create_app():
     app.register_blueprint(search_bp, url_prefix="/api/search")
     app.register_blueprint(user_bp, url_prefix="/api/users")
     app.register_blueprint(notification_bp, url_prefix="/api/notifications")
+    app.register_blueprint(review_bp, url_prefix="/api/reviews")
+    app.register_blueprint(ai_bp, url_prefix="/api/ai")
+    app.register_blueprint(admin_bp, url_prefix="/api/admin")
 
     with app.app_context():
         db.create_all()

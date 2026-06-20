@@ -32,10 +32,12 @@ export default function Dashboard() {
     { to: "/find-teams", icon: <Users size={18} className="text-cyan-400" />, label: "Find Teams", desc: "Join an open team", bg: "bg-cyan-500/8" },
     { to: "/teams/new", icon: <Plus size={18} className="text-emerald-400" />, label: "Create Team", desc: "Post a team slot", bg: "bg-emerald-500/8" },
     { to: "/projects/new", icon: <Zap size={18} className="text-amber-400" />, label: "Add Project", desc: "Share your idea", bg: "bg-amber-500/8" },
+    { to: "/ai/team-builder", icon: <Zap size={18} className="text-violet-300" />, label: "AI Builder", desc: "Auto-assemble a team", bg: "bg-violet-500/8" },
+    { to: "/ai/assistant", icon: <Zap size={18} className="text-cyan-300" />, label: "AI Ideas", desc: "Get project suggestions", bg: "bg-cyan-500/8" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#080812]">
+    <div className="min-h-screen page-bg">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 pt-24 pb-12">
 
@@ -60,7 +62,7 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
           {ACTIONS.map(a => (
             <Link key={a.to} to={a.to}
               className="card-hover group cursor-pointer">

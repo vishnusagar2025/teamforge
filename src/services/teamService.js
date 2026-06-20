@@ -41,3 +41,16 @@ export const projectService = {
   createProject: (data) => api.post("/projects/", data),
   getProject: (id) => api.get(`/projects/${id}`),
 };
+
+export const reviewService = {
+  getReviews: (userId) => api.get(`/reviews/users/${userId}`),
+  createReview: (userId, data) => api.post(`/reviews/users/${userId}`, data),
+};
+
+export const aiService = {
+  suggestTeammates: () => api.get("/ai/suggest-teammates"),
+  suggestTeams: () => api.get("/ai/suggest-teams"),
+  getProjectIdeas: () => api.get("/ai/project-ideas"),
+  getTeamHealth: (teamId) => api.get(`/ai/team-health/${teamId}`),
+  buildTeam: (data) => api.post("/ai/build-team", data),
+};

@@ -15,7 +15,7 @@ export default function EditProfile() {
     institution: user?.institution || "", department: user?.department || "",
     year_of_study: user?.year_of_study || "", linkedin_url: user?.linkedin_url || "",
     portfolio_url: user?.portfolio_url || "", commitment_level: user?.commitment_level || "serious",
-    bio: user?.profile?.bio || "", github_url: user?.profile?.github_url || "",
+    bio: user?.bio || "", github_url: user?.github_url || "",
   });
 
   const set = (k, v) => setForm(p => ({...p, [k]: v}));
@@ -33,7 +33,7 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F0F1A]">
+    <div className="min-h-screen page-bg">
       <Navbar />
       <div className="max-w-2xl mx-auto px-4 pt-24 pb-12">
         <h1 className="text-2xl font-bold mb-6">Edit Profile</h1>
