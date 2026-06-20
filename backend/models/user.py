@@ -33,6 +33,11 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    @staticmethod
+    def dummy_check():
+        """Run a fake password check to prevent timing attacks on login."""
+        check_password_hash("pbkdf2:sha256:dummy", "dummy")
+
     def to_dict(self):
         return {
             "id": self.id,
