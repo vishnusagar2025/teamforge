@@ -57,7 +57,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen page-bg">
+    <div className="page">
       <Navbar />
       {showAvatarBuilder && <AvatarBuilder onClose={() => setShowAvatarBuilder(false)} />}
 
