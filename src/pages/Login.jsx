@@ -17,7 +17,6 @@ export default function Login() {
     setLoading(true);
     try {
       await login(form.email, form.password);
-      toast.success("Welcome back!");
       navigate("/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.error || "Invalid email or password");
@@ -25,51 +24,63 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen page-bg flex items-center justify-center px-4">
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-violet-600/8 rounded-full blur-3xl" />
-      </div>
+    <div className="page" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "24px" }}>
+      <div style={{ width: "100%", maxWidth: 380 }}>
 
-      <div className="relative w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <Logo size={44} />
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+            <Logo size={32} />
           </div>
-          <p className="text-slate-500 text-sm">Sign in to find your team</p>
+          <h1 style={{ fontSize: "1.25rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>
+            Sign in to TeamForge
+          </h1>
+          <p className="muted">Welcome back. Let's build something great.</p>
         </div>
 
-        <div className="card">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5">Email address</label>
+        <div className="card" style={{ padding: 24 }}>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "var(--text2)", marginBottom: 6 }}>
+                Email address
+              </label>
               <input type="email" required className="input" placeholder="you@college.edu"
                 value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
             </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5">Password</label>
-              <div className="relative">
-                <input type={showPw ? "text" : "password"} required className="input pr-11" placeholder="••••••••"
+
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 500, color: "var(--text2)" }}>Password</label>
+              </div>
+              <div style={{ position: "relative" }}>
+                <input type={showPw ? "text" : "password"} required className="input"
+                  placeholder="••••••••" style={{ paddingRight: 40 }}
                   value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
                 <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
-                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                  style={{
+                    position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
+                    background: "none", border: "none", cursor: "pointer", color: "var(--text3)",
+                    display: "flex", padding: 0
+                  }}>
+                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
-            <button type="submit" disabled={loading} className="btn-primary w-full mt-2 py-3">
-              {loading ? "Signing in..." : <><span>Sign In</span><ArrowRight size={16} /></>}
+
+            <button type="submit" disabled={loading} className="btn btn-primary btn-lg"
+              style={{ width: "100%", height: 40 }}>
+              {loading ? "Signing in..." : <>Continue <ArrowRight size={14} /></>}
             </button>
           </form>
-
-          <div className="mt-4 pt-4 border-t border-white/[0.06] text-center">
-            <p className="text-sm text-slate-500">
-              No account?{" "}
-              <Link to="/register" className="text-violet-400 hover:text-violet-300 font-medium transition-colors">
-                Create one free
-              </Link>
-            </p>
-          </div>
         </div>
+
+        <p style={{ textAlign: "center", marginTop: 20, fontSize: 13, color: "var(--text3)" }}>
+          Don't have an account?{" "}
+          <Link to="/register" style={{ color: "var(--accent)", fontWeight: 500, textDecoration: "none" }}
+            onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
+            onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}>
+            Sign up
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -1,180 +1,167 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "../components/common/Logo";
-import { ArrowRight, Users, Zap, Search, Shield, Star, Github, Linkedin } from "lucide-react";
-
-const STATS = [
-  { value: "500+", label: "Students" },
-  { value: "120+", label: "Teams Formed" },
-  { value: "40+", label: "Hackathons" },
-  { value: "95%", label: "Match Rate" },
-];
+import { ArrowRight, Users, Zap, Search, Shield, Github, ChevronRight } from "lucide-react";
 
 const FEATURES = [
-  {
-    icon: <Zap size={20} className="text-violet-400" />,
-    title: "AI Match Score",
-    desc: "Get a compatibility score based on shared interests, complementary skills and commitment level.",
-    color: "from-violet-500/10 to-transparent",
-    border: "border-violet-500/20",
-  },
-  {
-    icon: <Search size={20} className="text-cyan-400" />,
-    title: "Smart Discovery",
-    desc: "Filter by institution, department, year, skills and domain. Find exactly who you need.",
-    color: "from-cyan-500/10 to-transparent",
-    border: "border-cyan-500/20",
-  },
-  {
-    icon: <Users size={20} className="text-emerald-400" />,
-    title: "Team Boards",
-    desc: "Post your team with required roles. Serious people find serious teams — fast.",
-    color: "from-emerald-500/10 to-transparent",
-    border: "border-emerald-500/20",
-  },
-  {
-    icon: <Shield size={20} className="text-amber-400" />,
-    title: "Commitment Filter",
-    desc: "Filter by 🔥 Serious, 📚 Learning, or 😄 Fun. No more flaky teammates.",
-    color: "from-amber-500/10 to-transparent",
-    border: "border-amber-500/20",
-  },
-];
-
-const STEPS = [
-  { num: "01", title: "Create your profile", desc: "Add skills, interests, and your commitment level in 2 minutes." },
-  { num: "02", title: "Get matched", desc: "Our AI scores your compatibility with others based on skills and interests." },
-  { num: "03", title: "Build together", desc: "Join a team or create one. Start building your hackathon project." },
+  { icon: <Zap size={16} />, title: "AI Compatibility", desc: "Scores match based on skills, interests and commitment — not just keywords." },
+  { icon: <Search size={16} />, title: "Smart Search", desc: "Filter by institution, department, skill, domain and availability." },
+  { icon: <Users size={16} />, title: "Team Builder", desc: "AI auto-assembles a balanced team from skill requirements you define." },
+  { icon: <Shield size={16} />, title: "Commitment Levels", desc: "Know upfront if someone is serious, learning or just having fun." },
 ];
 
 export default function Landing() {
   return (
-    <div className="min-h-screen page-bg text-white overflow-x-hidden">
-      {/* Ambient background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-600/8 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-cyan-600/6 rounded-full blur-3xl" />
-      </div>
+    <div className="page" style={{ color: "var(--text)" }}>
 
-      {/* Navbar */}
-      <header className="relative z-10 max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-        <Logo size={36} />
-        <nav className="hidden md:flex items-center gap-1">
-          {["Features", "How it works"].map(item => (
-            <a key={item} href={`#${item.toLowerCase().replace(/ /g, "-")}`}
-              className="px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-all">
-              {item}
-            </a>
-          ))}
-        </nav>
-        <div className="flex items-center gap-3">
-          <Link to="/login" className="btn-secondary text-sm py-2 px-4">Sign In</Link>
-          <Link to="/register" className="btn-primary text-sm py-2 px-4">Get Started <ArrowRight size={14} /></Link>
+      {/* Nav */}
+      <header style={{
+        position: "sticky", top: 0, zIndex: 50,
+        background: "rgba(10,10,10,0.8)", backdropFilter: "blur(12px)",
+        borderBottom: "1px solid var(--border)"
+      }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Logo size={28} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <Link to="/login" className="btn btn-ghost">Sign in</Link>
+            <Link to="/register" className="btn btn-primary btn-lg" style={{ height: 36 }}>
+              Get started <ArrowRight size={14} />
+            </Link>
+          </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-28 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-medium mb-8">
-          <Star size={12} className="fill-violet-400 text-violet-400" />
-          Built from a real hackathon struggle
+      <section style={{ maxWidth: 720, margin: "0 auto", padding: "96px 24px 80px", textAlign: "center" }}>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          background: "rgba(91,91,214,0.08)", border: "1px solid rgba(91,91,214,0.2)",
+          borderRadius: 99, padding: "4px 12px", marginBottom: 32,
+          fontSize: 12, color: "#a5b4fc", fontWeight: 500
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#818cf8", display: "inline-block" }} />
+          AI-powered team formation for students
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6">
+        <h1 style={{ fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.1, marginBottom: 20 }}>
           Find teammates who{" "}
-          <span className="gradient-text">actually show up</span>
+          <span className="gradient-text">actually show up.</span>
         </h1>
 
-        <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          Stop chasing unreliable people. TeamForge matches you with committed students
-          by skill, interest, and dedication — so you can build something real.
+        <p style={{ color: "var(--text2)", fontSize: "1.05rem", lineHeight: 1.7, maxWidth: 520, margin: "0 auto 36px", fontWeight: 400 }}>
+          TeamForge matches students by skill, interest, and commitment level — so you stop wasting time on unreliable collaborators.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
-          <Link to="/register" className="btn-primary text-base px-8 py-3">
-            Build Your Team <ArrowRight size={16} />
+        <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+          <Link to="/register" className="btn btn-primary btn-lg">
+            Create your profile <ArrowRight size={15} />
           </Link>
-          <Link to="/login" className="btn-secondary text-base px-8 py-3">
-            Sign In
+          <Link to="/login" className="btn btn-secondary btn-lg">
+            Sign in
           </Link>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-          {STATS.map(s => (
-            <div key={s.label} className="card py-4 px-3 text-center">
-              <p className="text-2xl font-bold gradient-text">{s.value}</p>
-              <p className="text-slate-500 text-xs mt-0.5">{s.label}</p>
+        {/* Social proof */}
+        <div style={{ marginTop: 48, display: "flex", alignItems: "center", justifyContent: "center", gap: 24, flexWrap: "wrap" }}>
+          {[["500+", "Students"], ["120+", "Teams formed"], ["95%", "Match accuracy"]].map(([v, l]) => (
+            <div key={l} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.03em", color: "var(--text)" }}>{v}</div>
+              <div style={{ fontSize: 12, color: "var(--text3)", marginTop: 2 }}>{l}</div>
             </div>
           ))}
         </div>
       </section>
 
+      {/* Divider */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
+        <div className="divider" />
+      </div>
+
       {/* Features */}
-      <section id="features" className="relative z-10 max-w-6xl mx-auto px-6 pb-24">
-        <p className="section-label text-center mb-3">Features</p>
-        <h2 className="text-3xl font-bold text-center mb-12">Everything you need to forge a great team</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <section style={{ maxWidth: 1100, margin: "0 auto", padding: "64px 24px" }}>
+        <p className="label" style={{ textAlign: "center", marginBottom: 12 }}>Features</p>
+        <h2 style={{ textAlign: "center", marginBottom: 48, fontSize: "1.6rem", letterSpacing: "-0.03em" }}>
+          Everything you need to build a great team
+        </h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
           {FEATURES.map(f => (
-            <div key={f.title} className={`card border ${f.border} bg-gradient-to-br ${f.color} flex gap-4 group hover:-translate-y-0.5 transition-all duration-200`}>
-              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 mt-0.5">
+            <div key={f.title} className="card" style={{ padding: "20px 20px" }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 8,
+                background: "rgba(91,91,214,0.1)", border: "1px solid rgba(91,91,214,0.2)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "#a78bfa", marginBottom: 14
+              }}>
                 {f.icon}
               </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1.5">{f.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
-              </div>
+              <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 6 }}>{f.title}</h3>
+              <p style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6 }}>{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="relative z-10 max-w-4xl mx-auto px-6 pb-24">
-        <p className="section-label text-center mb-3">How it works</p>
-        <h2 className="text-3xl font-bold text-center mb-12">From signup to building — in minutes</h2>
-        <div className="space-y-4">
-          {STEPS.map((s, i) => (
-            <div key={s.num} className="flex gap-6 items-start">
-              <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
-                <span className="text-violet-400 font-bold text-sm">{s.num}</span>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
+        <div className="divider" />
+      </div>
+      <section style={{ maxWidth: 640, margin: "0 auto", padding: "64px 24px" }}>
+        <p className="label" style={{ textAlign: "center", marginBottom: 12 }}>How it works</p>
+        <h2 style={{ textAlign: "center", marginBottom: 40, fontSize: "1.6rem", letterSpacing: "-0.03em" }}>
+          From signup to building in minutes
+        </h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {[
+            { n: "1", t: "Create your profile", d: "Add skills, interests and commitment level. Takes 2 minutes." },
+            { n: "2", t: "Get matched by AI", d: "Compatibility scores based on shared interests and complementary skills." },
+            { n: "3", t: "Join or create a team", d: "Send a request or post your team. Build something real." },
+          ].map((s, i) => (
+            <div key={s.n} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <div style={{
+                  width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
+                  background: "rgba(91,91,214,0.1)", border: "1px solid rgba(91,91,214,0.25)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 12, fontWeight: 600, color: "#a78bfa"
+                }}>{s.n}</div>
+                {i < 2 && <div style={{ width: 1, height: 32, background: "var(--border)", marginTop: 4 }} />}
               </div>
-              <div className="card flex-1 py-4">
-                <h3 className="font-semibold mb-1">{s.title}</h3>
-                <p className="text-slate-400 text-sm">{s.desc}</p>
+              <div style={{ paddingBottom: i < 2 ? 28 : 0, paddingTop: 4 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{s.t}</div>
+                <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6 }}>{s.d}</div>
               </div>
-              {i < STEPS.length - 1 && (
-                <div className="absolute ml-6 mt-12 w-px h-4 bg-violet-500/20" />
-              )}
             </div>
           ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="relative z-10 max-w-3xl mx-auto px-6 pb-24">
-        <div className="card border-violet-500/20 bg-gradient-to-br from-violet-500/10 via-transparent to-cyan-500/5 text-center py-12">
-          <h2 className="text-3xl font-bold mb-3">Ready to forge your team?</h2>
-          <p className="text-slate-400 mb-8">Join students building real projects with committed teammates.</p>
-          <Link to="/register" className="btn-primary text-base px-10 py-3">
-            Create Your Profile <ArrowRight size={16} />
-          </Link>
-        </div>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
+        <div className="divider" />
+      </div>
+      <section style={{ maxWidth: 560, margin: "0 auto", padding: "64px 24px 96px", textAlign: "center" }}>
+        <h2 style={{ fontSize: "1.6rem", fontWeight: 700, letterSpacing: "-0.03em", marginBottom: 12 }}>
+          Ready to forge your team?
+        </h2>
+        <p style={{ color: "var(--text2)", fontSize: 14, lineHeight: 1.6, marginBottom: 28 }}>
+          Join students building real projects with committed teammates.
+        </p>
+        <Link to="/register" className="btn btn-primary btn-lg">
+          Create your profile for free <ArrowRight size={15} />
+        </Link>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/[0.06] py-8">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <Logo size={28} />
-          <p className="text-slate-600 text-sm">© 2025 TeamForge. Built for every student who got betrayed by uncommitted teammates.</p>
-          <div className="flex gap-4">
-            <a href="https://github.com/vishnusagar2025/teamforge" target="_blank" rel="noreferrer"
-              className="text-slate-600 hover:text-white transition-colors">
-              <Github size={18} />
-            </a>
-          </div>
+      <div style={{ borderTop: "1px solid var(--border)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <Logo size={22} />
+          <span style={{ fontSize: 12, color: "var(--text3)" }}>© 2025 TeamForge</span>
+          <a href="https://github.com/vishnusagar2025/teamforge" target="_blank" rel="noreferrer"
+            style={{ color: "var(--text3)" }} className="btn btn-ghost" >
+            <Github size={15} /> GitHub
+          </a>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

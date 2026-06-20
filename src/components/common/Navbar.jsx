@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { useNotifications } from "../../hooks/useNotifications";
-import { Users, Search, Bell, LogOut, Home, FolderKanban, Menu, X, Bot, Zap, Sun, Moon, ChevronDown } from "lucide-react";
+import { Users, Search, Bell, LogOut, Home, FolderKanban, Menu, X, Bot, Zap, Sun, Moon } from "lucide-react";
 import Logo from "./Logo";
 import AvatarDisplay from "./AvatarDisplay";
 
@@ -12,126 +12,161 @@ export default function Navbar() {
   const { dark, toggle } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
+  const aiRef = useRef(null);
   const { unreadCount } = useNotifications();
 
-  const handleLogout = () => { logout(); navigate("/"); };
-  const isActive = (path) => location.pathname.startsWith(path);
+  const p = location.pathname;
+  const active = (path) => p === path || p.startsWith(path + "/");
+
+  useEffect(() => {
+    const handler = (e) => { if (aiRef.current && !aiRef.current.contains(e.target)) setAiOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const NAV = [
+    { to: "/dashboard", icon: <Home size={14} />, label: "Home" },
+    { to: "/find-people", icon: <Search size={14} />, label: "People" },
+    { to: "/find-teams", icon: <Users size={14} />, label: "Teams" },
+    { to: "/projects", icon: <FolderKanban size={14} />, label: "Projects" },
+  ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b" style={{ borderColor: "var(--border)" }}>
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-        <Link to="/dashboard"><Logo size={30} /></Link>
+    <>
+      <nav className="navbar" style={{ borderBottom: "1px solid var(--border)" }}>
+        <div style={{ width: "100%", maxWidth: 1200, margin: "0 auto", padding: "0 20px", display: "flex", alignItems: "center", gap: 4 }}>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-0.5">
-          <Link to="/dashboard" className={`nav-link ${isActive("/dashboard") ? "active" : ""}`}>
-            <Home size={15} /> Home
-          </Link>
-          <Link to="/find-people" className={`nav-link ${isActive("/find-people") ? "active" : ""}`}>
-            <Search size={15} /> Find People
-          </Link>
-          <Link to="/find-teams" className={`nav-link ${isActive("/find-teams") ? "active" : ""}`}>
-            <Users size={15} /> Teams
-          </Link>
-          <Link to="/projects" className={`nav-link ${isActive("/projects") ? "active" : ""}`}>
-            <FolderKanban size={15} /> Projects
+          <Link to="/dashboard" style={{ marginRight: 8 }}>
+            <Logo size={26} />
           </Link>
 
-          {/* AI Dropdown */}
-          <div className="relative">
-            <button onClick={() => setAiOpen(o => !o)}
-              className={`nav-link ${isActive("/ai") ? "active" : ""}`}>
-              <Bot size={15} /> AI <ChevronDown size={12} className={`transition-transform ${aiOpen ? "rotate-180" : ""}`} />
-            </button>
-            {aiOpen && (
-              <div className="absolute top-full mt-1 left-0 w-48 card py-1 px-0 shadow-xl z-50"
-                onMouseLeave={() => setAiOpen(false)}>
-                <Link to="/ai/assistant" onClick={() => setAiOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-violet-500/5 transition-colors"
-                  style={{ color: "var(--text2)" }}>
-                  <Bot size={14} className="text-cyan-400" /> AI Assistant
-                </Link>
-                <Link to="/ai/team-builder" onClick={() => setAiOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-violet-500/5 transition-colors"
-                  style={{ color: "var(--text2)" }}>
-                  <Zap size={14} className="text-violet-400" /> Team Builder
-                </Link>
-              </div>
-            )}
+          {/* Desktop links */}
+          <div style={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }} className="hidden-mobile">
+            {NAV.map(n => (
+              <Link key={n.to} to={n.to}
+                className={`nav-item ${active(n.to) ? "active" : ""}`}>
+                {n.icon}{n.label}
+              </Link>
+            ))}
+
+            {/* AI dropdown */}
+            <div ref={aiRef} style={{ position: "relative" }}>
+              <button onClick={() => setAiOpen(o => !o)}
+                className={`nav-item ${p.startsWith("/ai") ? "active" : ""}`}
+                style={{ border: "none", background: "none", cursor: "pointer", fontFamily: "inherit" }}>
+                <Bot size={14} /> AI
+                <svg width="10" height="10" viewBox="0 0 10 10" style={{ opacity: 0.5, transition: "transform 0.15s", transform: aiOpen ? "rotate(180deg)" : "" }}>
+                  <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                </svg>
+              </button>
+              {aiOpen && (
+                <div className="card" style={{
+                  position: "absolute", top: "calc(100% + 8px)", left: 0,
+                  minWidth: 180, padding: "4px", zIndex: 100,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.4)"
+                }}>
+                  {[
+                    { to: "/ai/assistant", icon: <Bot size={13} />, label: "AI Assistant" },
+                    { to: "/ai/team-builder", icon: <Zap size={13} />, label: "Team Builder" },
+                  ].map(item => (
+                    <Link key={item.to} to={item.to} onClick={() => setAiOpen(false)}
+                      style={{
+                        display: "flex", alignItems: "center", gap: 8, padding: "8px 10px",
+                        borderRadius: 7, fontSize: 13, color: "var(--text2)",
+                        transition: "all 0.12s"
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--surface2)"; e.currentTarget.style.color = "var(--text)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = ""; e.currentTarget.style.color = "var(--text2)"; }}>
+                      {item.icon}{item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Right side */}
-        <div className="hidden md:flex items-center gap-2">
-          {/* Theme toggle */}
-          <button onClick={toggle}
-            className="p-2 rounded-lg transition-all hover:bg-white/5"
-            style={{ color: "var(--text2)" }}
-            title={dark ? "Switch to light mode" : "Switch to dark mode"}>
-            {dark ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
+          {/* Right side */}
+          <div style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: "auto" }} className="hidden-mobile">
+            <button onClick={toggle} className="btn btn-ghost" style={{ padding: "0 8px", height: 32 }} title={dark ? "Light mode" : "Dark mode"}>
+              {dark ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
 
-          {/* Notifications */}
-          <Link to="/notifications" className="relative p-2 rounded-lg transition-all hover:bg-white/5"
-            style={{ color: "var(--text2)" }}>
-            <Bell size={17} />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-violet-600 text-white text-[9px] rounded-full flex items-center justify-center font-bold">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </Link>
+            <Link to="/notifications" className="btn btn-ghost" style={{ padding: "0 8px", height: 32, position: "relative" }}>
+              <Bell size={15} />
+              {unreadCount > 0 && (
+                <span style={{
+                  position: "absolute", top: 4, right: 4,
+                  width: 16, height: 16, borderRadius: "50%",
+                  background: "var(--accent)", color: "#fff",
+                  fontSize: 9, fontWeight: 700,
+                  display: "flex", alignItems: "center", justifyContent: "center"
+                }}>{unreadCount > 9 ? "9+" : unreadCount}</span>
+              )}
+            </Link>
 
-          {/* Profile */}
-          <Link to="/profile"
-            className="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-xl border transition-all hover:border-violet-500/30"
-            style={{ background: "var(--bg3)", borderColor: "var(--border)" }}>
-            <AvatarDisplay user={user} size={26} />
-            <span className="text-sm font-medium" style={{ color: "var(--text)" }}>
+            <Link to="/profile" style={{
+              display: "flex", alignItems: "center", gap: 8,
+              padding: "4px 10px 4px 6px", borderRadius: 8,
+              border: "1px solid var(--border)", background: "var(--surface2)",
+              fontSize: 13, fontWeight: 450, color: "var(--text)",
+              transition: "all 0.12s", textDecoration: "none"
+            }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "var(--border2)"}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border)"}>
+              <AvatarDisplay user={user} size={22} />
               {user?.full_name?.split(" ")[0]}
-            </span>
-          </Link>
+            </Link>
 
-          <button onClick={handleLogout}
-            className="p-2 rounded-lg transition-all hover:bg-red-500/5 text-slate-500 hover:text-red-400">
-            <LogOut size={15} />
+            <button onClick={() => { logout(); navigate("/"); }}
+              className="btn btn-ghost" style={{ padding: "0 8px", height: 32, color: "var(--text3)" }}
+              title="Sign out">
+              <LogOut size={15} />
+            </button>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button className="btn btn-ghost show-mobile" style={{ marginLeft: "auto", padding: "0 6px", height: 32 }}
+            onClick={() => setMobileOpen(o => !o)}>
+            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
+      </nav>
 
-        <button className="md:hidden p-2 rounded-lg hover:bg-white/5" style={{ color: "var(--text2)" }}
-          onClick={() => setOpen(!open)}>
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden px-3 pb-3 space-y-0.5 border-t" style={{ borderColor: "var(--border)", background: "var(--bg2)" }}>
-          {[
-            { to: "/dashboard", icon: <Home size={15} />, label: "Home" },
-            { to: "/find-people", icon: <Search size={15} />, label: "Find People" },
-            { to: "/find-teams", icon: <Users size={15} />, label: "Teams" },
-            { to: "/projects", icon: <FolderKanban size={15} />, label: "Projects" },
-            { to: "/ai/assistant", icon: <Bot size={15} />, label: "AI Assistant" },
-            { to: "/ai/team-builder", icon: <Zap size={15} />, label: "AI Team Builder" },
-            { to: "/notifications", icon: <Bell size={15} />, label: `Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}` },
-          ].map(link => (
-            <Link key={link.to} to={link.to} onClick={() => setOpen(false)}
-              className={`nav-link w-full ${isActive(link.to) ? "active" : ""}`}>
-              {link.icon} {link.label}
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div style={{
+          position: "fixed", top: 56, left: 0, right: 0, zIndex: 49,
+          background: "var(--surface)", borderBottom: "1px solid var(--border)",
+          padding: "8px 16px 16px"
+        }} className="show-mobile">
+          {[...NAV,
+            { to: "/ai/assistant", icon: <Bot size={14} />, label: "AI Assistant" },
+            { to: "/ai/team-builder", icon: <Zap size={14} />, label: "Team Builder" },
+            { to: "/notifications", icon: <Bell size={14} />, label: `Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}` },
+          ].map(n => (
+            <Link key={n.to} to={n.to} onClick={() => setMobileOpen(false)}
+              className={`nav-item ${active(n.to) ? "active" : ""}`}
+              style={{ width: "100%", marginBottom: 2 }}>
+              {n.icon}{n.label}
             </Link>
           ))}
-          <button onClick={toggle} className="nav-link w-full">
-            {dark ? <Sun size={15} /> : <Moon size={15} />}
-            {dark ? "Light Mode" : "Dark Mode"}
+          <div className="divider" style={{ margin: "8px 0" }} />
+          <button onClick={toggle} className="nav-item" style={{ width: "100%", border: "none", background: "none", cursor: "pointer", fontFamily: "inherit", marginBottom: 2 }}>
+            {dark ? <Sun size={14} /> : <Moon size={14} />} {dark ? "Light mode" : "Dark mode"}
           </button>
-          <button onClick={handleLogout} className="nav-link w-full text-red-400 hover:bg-red-500/5">
-            <LogOut size={15} /> Logout
+          <button onClick={() => { logout(); navigate("/"); }}
+            className="nav-item" style={{ width: "100%", color: "#f87171", border: "none", background: "none", cursor: "pointer", fontFamily: "inherit" }}>
+            <LogOut size={14} /> Sign out
           </button>
         </div>
       )}
-    </nav>
+
+      <style>{`
+        @media (max-width: 768px) { .hidden-mobile { display: none !important; } }
+        @media (min-width: 769px) { .show-mobile { display: none !important; } }
+      `}</style>
+    </>
   );
 }
