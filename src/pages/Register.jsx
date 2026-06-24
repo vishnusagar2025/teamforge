@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../components/common/Logo";
 import toast from "react-hot-toast";
-import { X, Eye, EyeOff, ArrowRight, Check, AlertCircle } from "lucide-react";
+import { X, Eye, EyeOff, ArrowRight, Check, AlertCircle, Zap } from "lucide-react";
 import { INTEREST_LIST, DEPARTMENTS, YEARS, SKILL_SUGGESTIONS, DOMAIN_ICONS } from "../data/constants";
 
 const STEPS = ["Account", "Academic", "Skills", "Interests"];
@@ -42,6 +42,7 @@ export default function Register() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [slowMsg, setSlowMsg] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [showCPw, setShowCPw] = useState(false);
   const [skillInput, setSkillInput] = useState("");
@@ -57,6 +58,15 @@ export default function Register() {
   const toggleInterest = (cat) => set("interests", form.interests.includes(cat) ? form.interests.filter(c => c !== cat) : [...form.interests, cat]);
   const addSkill = (n) => { const t = n.trim(); if (!t || form.skills.includes(t)) return; set("skills", [...form.skills, t]); setSkillInput(""); };
   const removeSkill = (n) => set("skills", form.skills.filter(s => s !== n));
+
+  // Show waking-up message on slow submit (Render free tier cold start)
+  useEffect(() => {
+    let t;
+    if (loading) {
+      t = setTimeout(() => setSlowMsg("Connecting to server..."), 4000);
+    } else { setSlowMsg(""); }
+    return () => clearTimeout(t);
+  }, [loading]);
 
   const pw = getPwStrength(form.password);
 
@@ -336,6 +346,20 @@ export default function Register() {
               </button>
             </div>
           </form>
+
+          {/* Cold start warning */}
+          {slowMsg && (
+            <div style={{
+              marginTop: 14, padding: "10px 14px", borderRadius: 8,
+              background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.2)",
+              display: "flex", alignItems: "flex-start", gap: 8
+            }}>
+              <Zap size={14} style={{ color: "#eab308", marginTop: 1, flexShrink: 0 }} />
+              <p style={{ fontSize: 12, color: "#eab308", lineHeight: 1.4 }}>
+                Server is waking up — this takes ~30 seconds on first use. Please wait...
+              </p>
+            </div>
+          )}
         </div>
 
         {step === 0 && (
