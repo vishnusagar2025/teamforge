@@ -55,6 +55,7 @@ def request_to_join(team_id):
         user_id=team.leader_id, title="New Join Request",
         message=f"{user.full_name} wants to join your team '{team.name}'",
         notif_type="join_request", reference_id=team_id,
+        sender_id=user_id,
     )
     db.session.add(notif)
     db.session.commit()

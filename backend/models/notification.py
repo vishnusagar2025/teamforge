@@ -9,12 +9,15 @@ class Notification(db.Model):
     message = db.Column(db.Text, nullable=False)
     notif_type = db.Column(db.String(30), default="info")
     is_read = db.Column(db.Boolean, default=False)
-    reference_id = db.Column(db.Integer)
+    reference_id = db.Column(db.Integer)   # team_id for join requests
+    sender_id = db.Column(db.Integer, nullable=True)  # who triggered the notif
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
         return {
             "id": self.id, "title": self.title, "message": self.message,
             "type": self.notif_type, "is_read": self.is_read,
-            "reference_id": self.reference_id, "created_at": self.created_at.isoformat(),
+            "reference_id": self.reference_id,
+            "sender_id": self.sender_id,
+            "created_at": self.created_at.isoformat(),
         }
