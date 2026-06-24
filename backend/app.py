@@ -40,6 +40,12 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+    # Health check endpoint — used by UptimeRobot to keep Render awake
+    @app.route("/api/health")
+    def health():
+        from flask import jsonify
+        return jsonify({"status": "ok", "service": "TeamForge API"}), 200
+
     return app
 
 if __name__ == "__main__":

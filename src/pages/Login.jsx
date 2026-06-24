@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../components/common/Logo";
 import toast from "react-hot-toast";
-import { Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Zap } from "lucide-react";
 
 export default function Login() {
   const { login } = useAuth();
@@ -11,6 +11,30 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [slowMsg, setSlowMsg] = useState(""); // cold start message
+  const [elapsed, setElapsed] = useState(0);
+
+  // Show a "waking up server..." message if login takes > 4 seconds
+  useEffect(() => {
+    let interval;
+    if (loading) {
+      setElapsed(0);
+      interval = setInterval(() => {
+        setElapsed(s => {
+          const next = s + 1;
+          if (next === 4)  setSlowMsg("Connecting to server...");
+          if (next === 10) setSlowMsg("Waking up the server (first request may take ~30s)...");
+          if (next === 25) setSlowMsg("Almost there, server is starting up...");
+          if (next === 50) setSlowMsg("Taking longer than usual. Please wait...");
+          return next;
+        });
+      }, 1000);
+    } else {
+      setSlowMsg("");
+      setElapsed(0);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,8 +43,14 @@ export default function Login() {
       await login(form.email, form.password);
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.error || "Invalid email or password");
-    } finally { setLoading(false); }
+      if (err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
+        toast.error("Server took too long to respond. Please try again.");
+      } else {
+        toast.error(err.response?.data?.error || "Invalid email or password");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -72,10 +102,40 @@ export default function Login() {
             </div>
 
             <button type="submit" disabled={loading} className="btn btn-primary btn-lg"
-              style={{ width: "100%", height: 40 }}>
-              {loading ? "Signing in..." : <>Continue <ArrowRight size={14} /></>}
+              style={{ width: "100%", height: 42, position: "relative", overflow: "hidden" }}>
+              {loading ? (
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  <span style={{
+                    width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)",
+                    borderTopColor: "#fff", borderRadius: "50%",
+                    animation: "spin 0.7s linear infinite", display: "inline-block"
+                  }} />
+                  Signing in...
+                </span>
+              ) : (
+                <>Continue <ArrowRight size={14} /></>
+              )}
             </button>
           </form>
+
+          {/* Cold start warning */}
+          {slowMsg && (
+            <div style={{
+              marginTop: 14, padding: "10px 14px", borderRadius: 8,
+              background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.2)",
+              display: "flex", alignItems: "flex-start", gap: 8
+            }}>
+              <Zap size={14} style={{ color: "#eab308", marginTop: 1, flexShrink: 0 }} />
+              <div>
+                <p style={{ fontSize: 12, color: "#eab308", fontWeight: 500, marginBottom: 2 }}>
+                  Server warming up
+                </p>
+                <p style={{ fontSize: 11, color: "var(--text3)", lineHeight: 1.4 }}>
+                  {slowMsg} The free server takes 30–60s to start after inactivity. This only happens once.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <p style={{ textAlign: "center", marginTop: 20, fontSize: 13, color: "var(--text3)" }}>
