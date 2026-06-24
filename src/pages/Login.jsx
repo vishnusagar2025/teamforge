@@ -48,8 +48,13 @@ export default function Login() {
             </div>
 
             <div style={{ marginBottom: 20 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <label style={{ fontSize: 12, fontWeight: 500, color: "var(--text2)" }}>Password</label>
+                <Link to="/forgot-password" style={{ fontSize: 12, color: "var(--accent)", textDecoration: "none", fontWeight: 500 }}
+                  onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
+                  onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}>
+                  Forgot password?
+                </Link>
               </div>
               <div style={{ position: "relative" }}>
                 <input type={showPw ? "text" : "password"} required className="input"

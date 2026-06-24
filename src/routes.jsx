@@ -18,6 +18,7 @@ import UserProfile from "./pages/UserProfile";
 import Notifications from "./pages/Notifications";
 import AITeamBuilder from "./pages/AITeamBuilder";
 import AIAssistant from "./pages/AIAssistant";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -35,6 +36,7 @@ export default function AppRoutes() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/find-people" element={<PrivateRoute><FindPeople /></PrivateRoute>} />
       <Route path="/find-teams" element={<PrivateRoute><FindTeams /></PrivateRoute>} />

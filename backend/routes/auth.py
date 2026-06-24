@@ -201,3 +201,63 @@ def change_password():
     user.set_password(new_pw)
     db.session.commit()
     return jsonify({"message": "Password updated successfully"}), 200
+
+
+@auth_bp.route("/verify-identity", methods=["POST"])
+def verify_identity():
+    """Step 1 of forgot-password: confirm email + phone match."""
+    data = request.get_json(silent=True) or {}
+    email = sanitize(data.get("email"), 120).lower()
+    phone = sanitize(data.get("phone"), 20)
+
+    if not email or not phone:
+        return jsonify({"error": "Email and phone are required"}), 400
+    if not validate_email(email):
+        return jsonify({"error": "Enter a valid email address"}), 400
+    if not validate_phone(phone):
+        return jsonify({"error": "Enter a valid phone number"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "No account found with that email"}), 404
+
+    # Strip and compare phone digits only
+    stored = re.sub(r'[\s\-()]', '', str(user.phone or ''))
+    incoming = re.sub(r'[\s\-()]', '', phone)
+    if stored != incoming:
+        return jsonify({"error": "Phone number does not match our records"}), 400
+
+    return jsonify({"message": "Identity verified"}), 200
+
+
+@auth_bp.route("/reset-password", methods=["POST"])
+def reset_password():
+    """Step 2 of forgot-password: set a new password after identity verified."""
+    data = request.get_json(silent=True) or {}
+    email    = sanitize(data.get("email"), 120).lower()
+    phone    = sanitize(data.get("phone"), 20)
+    new_pw   = str(data.get("new_password", ""))
+
+    if not email or not phone or not new_pw:
+        return jsonify({"error": "All fields are required"}), 400
+
+    # Re-verify identity (prevent direct API calls bypassing step 1)
+    if not validate_email(email) or not validate_phone(phone):
+        return jsonify({"error": "Invalid credentials"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "No account found with that email"}), 404
+
+    stored   = re.sub(r'[\s\-()]', '', str(user.phone or ''))
+    incoming = re.sub(r'[\s\-()]', '', phone)
+    if stored != incoming:
+        return jsonify({"error": "Identity verification failed"}), 400
+
+    pw_ok, pw_msg = validate_password(new_pw)
+    if not pw_ok:
+        return jsonify({"error": pw_msg}), 400
+
+    user.set_password(new_pw)
+    db.session.commit()
+    return jsonify({"message": "Password reset successfully"}), 200
