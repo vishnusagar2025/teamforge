@@ -17,6 +17,7 @@ from routes.notification import notification_bp
 from routes.review import review_bp
 from routes.ai_routes import ai_bp
 from routes.admin import admin_bp
+from routes.resume_chat import resume_chat_bp
 
 def create_app():
     app = Flask(__name__)
@@ -36,6 +37,7 @@ def create_app():
     app.register_blueprint(review_bp, url_prefix="/api/reviews")
     app.register_blueprint(ai_bp, url_prefix="/api/ai")
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
+    app.register_blueprint(resume_chat_bp, url_prefix="/api/resume-chat")
 
     with app.app_context():
         db.create_all()

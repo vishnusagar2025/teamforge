@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { useNotifications } from "../../hooks/useNotifications";
-import { Users, Search, Bell, LogOut, Home, FolderKanban, Menu, X, Bot, Zap, Sun, Moon } from "lucide-react";
+import { Users, Search, Bell, LogOut, Home, FolderKanban, Menu, X, Bot, Zap, Sun, Moon, MessageSquareText } from "lucide-react";
 import Logo from "./Logo";
 import AvatarDisplay from "./AvatarDisplay";
 
@@ -70,6 +70,7 @@ export default function Navbar() {
                   {[
                     { to: "/ai/assistant", icon: <Bot size={13} />, label: "AI Assistant" },
                     { to: "/ai/team-builder", icon: <Zap size={13} />, label: "Team Builder" },
+                    { to: "/resume-chat", icon: <MessageSquareText size={13} />, label: "Team Finder" },
                   ].map(item => (
                     <Link key={item.to} to={item.to} onClick={() => setAiOpen(false)}
                       style={{
@@ -144,6 +145,7 @@ export default function Navbar() {
           {[...NAV,
             { to: "/ai/assistant", icon: <Bot size={14} />, label: "AI Assistant" },
             { to: "/ai/team-builder", icon: <Zap size={14} />, label: "Team Builder" },
+            { to: "/resume-chat", icon: <MessageSquareText size={14} />, label: "Team Finder" },
             { to: "/notifications", icon: <Bell size={14} />, label: `Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}` },
           ].map(n => (
             <Link key={n.to} to={n.to} onClick={() => setMobileOpen(false)}

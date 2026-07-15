@@ -19,6 +19,7 @@ import Notifications from "./pages/Notifications";
 import AITeamBuilder from "./pages/AITeamBuilder";
 import AIAssistant from "./pages/AIAssistant";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResumeChat from "./pages/ResumeChat";
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -50,6 +51,7 @@ export default function AppRoutes() {
       <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
       <Route path="/ai/team-builder" element={<PrivateRoute><AITeamBuilder /></PrivateRoute>} />
       <Route path="/ai/assistant" element={<PrivateRoute><AIAssistant /></PrivateRoute>} />
+      <Route path="/resume-chat" element={<PrivateRoute><ResumeChat /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
